@@ -13,8 +13,11 @@ class EC2ParameterStore(BaseStore):
 
     def __init__(self):
         import boto3
+        import json
+        import urllib2
 
-        self.client = boto3.client('ssm')
+        document = json.loads(urllib2.urlopen("http://169.254.169.254/latest/dynamic/instance-identity/document").read())
+        self.client = boto3.client('ssm', region_name=document['region'])
 
     def load_values(self, items):
         """Load the parameters from the AWS Parameter Store
